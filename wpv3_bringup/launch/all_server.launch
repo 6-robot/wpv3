@@ -1,0 +1,9 @@
+<launch>
+ 
+  <!--- Run WPV3  -->
+  <include file="$(find wpv3_bringup)/launch/base_imu_lidar.launch" />
+
+  <node pkg="wpv3_bringup" type="wpv3_follow_server" name="wpv3_follow_server" />
+  <node pkg="wpv3_bringup" type="wpv3_dock_server" name="wpv3_dock_server" />
+
+</launch>

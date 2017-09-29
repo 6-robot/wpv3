@@ -1,0 +1,11 @@
+<launch>
+
+  <!--- Run WPV3 normal -->
+  <include file="$(find wpv3_bringup)/launch/base_imu_lidar.launch" />
+
+    <!-- Run wpV3_dock node -->
+  <node name="wpv3_dock_server" pkg="wpv3_bringup" type="wpv3_dock_server"  output="screen">
+    <param name="start" type="bool" value="true"/> 
+  </node>
+
+</launch>

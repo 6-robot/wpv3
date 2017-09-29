@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<robot name="WPV3">
+
+  <!-- material -->
+  <material name = "black">
+    <color rgba = "0.01 0.01 0.01 1"/>
+  </material>
+  <material name = "grey">
+    <color rgba = "0.2 0.2 0.2 1"/>
+  </material>
+  <material name = "blue">
+    <color rgba = "0.2 0.2 0.9 1"/>
+  </material>
+
+
+<link name="base_footprint">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.05 0.05 0.001" />
+      </geometry>
+      <material name="TransparentGreen" />
+    </visual>
+    <collision>
+      <origin xyz="0 0 .1" rpy="0 0 0" />
+      <geometry>
+        <box size="0.76 0.5 .2"/>
+      </geometry>
+    </collision>
+    <inertial>
+    <mass value="10"/>
+    <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
+    </inertial>
+</link>
+
+<joint name="base_joint" type="fixed">
+  <origin xyz="0 0 0" rpy="0 0 0" />
+  <parent link="base_footprint"/>
+  <child link="base_link" />
+</joint>
+
+  <!-- base -->
+  <link name="base_link">
+  <visual>
+   <geometry>
+    <mesh filename="package://wpv3_bringup/meshes/wpv3.dae" scale="1 1 1"/>
+   </geometry>
+   <origin rpy = "1.57 0 -1.57" xyz = "0.22 .293 0"/>
+  </visual>
+  </link>
+
+  <!-- *****************-->
+  <!-- Lidar -->
+  <link name = "laser">
+    <visual>
+    <geometry>
+      <cylinder length="0.03" radius="0.03"/>
+    </geometry>
+    <origin rpy = "0 0 0" xyz = "0 0 0"/>
+    </visual>
+  </link>
+  <joint name="laser_joint" type="fixed">
+      <origin rpy="0 0 0" xyz="0.19 0 0"  /> <!--pos-->
+      <parent link="base_link" />
+      <child link="laser" />
+  </joint>
+
+  <!-- Kinect -->
+<link name = "kinect2_dock">
+  <visual>
+   <geometry>
+    <!-- <box size=".01 .25 .07"/>-->
+    <box size="0 0 0"/>
+   </geometry>
+   <origin rpy = "0 0 0" xyz = "0 0 0"/>
+   <material name = "red"/>
+  </visual>
+</link>
+<joint name="kinect_height" type="prismatic">
+    <parent link="base_link"/>
+    <child link="kinect2_dock"/>
+    <limit effort="1000.0" lower="0" upper="1.35" velocity="0.5"/>
+    <origin xyz="0.174 0 0" rpy="0 -1.5707963 0"/>
+  </joint>
+
+<link name = "kinect2_ir_optical_frame">
+  <visual>
+   <geometry>
+    <!-- <box size=".25 .04 .07"/>-->
+    <box size="0 0 0"/>
+   </geometry>
+   <origin xyz = "0 0 0" rpy = "0 0 0"/>
+   <material name = "blue"/>
+  </visual>
+</link>
+
+<joint name="kinect_pitch" type="revolute">
+    <axis xyz="1 0 0"/>
+    <limit effort="1000.0" lower="-1.57" upper="1.57" velocity="0.5"/>
+    <origin xyz="0 0 0" rpy="3.1415926 0 -1.5707963" /> <!--pos-->
+    <parent link="kinect2_dock" />
+    <child link="kinect2_ir_optical_frame" />
+</joint>
+
+<link name = "kinect2_rgb_optical_frame">
+  <visual>
+   <geometry>
+    <box size="0 0 0"/>
+   </geometry>
+   <origin rpy = "0 0 0" xyz = "0 0 0"/>
+   <material name = "blue"/>
+  </visual>
+</link>
+<joint name="kinect_hd_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" /> <!--pos-->
+    <parent link="kinect2_ir_optical_frame" />
+    <child link="kinect2_rgb_optical_frame" />
+</joint>
+
+  
+</robot>

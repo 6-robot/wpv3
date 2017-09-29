@@ -1,0 +1,11 @@
+<launch>
+  
+  <!--- Run WPv3 Minimal -->
+  <include file="$(find wpv3_bringup)/launch/base_imu_lidar.launch" />
+
+  <!--- Run Gmapping -->
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping">
+    <param name="base_frame" value="base_footprint"/>
+  </node>
+
+</launch>

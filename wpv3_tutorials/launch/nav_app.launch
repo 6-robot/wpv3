@@ -1,0 +1,30 @@
+<launch>
+  <master auto="start"/>
+
+  <!--- Run WPV3 -->
+  <include file="$(find wpv3_bringup)/launch/base_imu_lidar.launch" />
+
+  <!-- Run the map server -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find wpv3_tutorials)/maps/map.yaml"/>
+
+  <!--- Run AMCL -->
+  <include file="$(find wpv3_tutorials)/nav_lidar/amcl_omni.launch" />
+
+  <!--- Run move base -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base"  output="screen">
+    <rosparam file="$(find wpv3_tutorials)/nav_lidar/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find wpv3_tutorials)/nav_lidar/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find wpv3_tutorials)/nav_lidar/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find wpv3_tutorials)/nav_lidar/global_costmap_params.yaml" command="load" />
+    <param name="base_global_planner" value="global_planner/GlobalPlanner" /> 
+    <param name="use_dijkstra" value="true"/>
+    <param name="base_local_planner" value="wpv3_local_planner/Wpv3LocalPlanner" />
+    <param name= "controller_frequency" value="30" type="double"/>
+  </node>
+
+  <!-- RViz -->
+  <arg name="model" default="$(find wpv3_bringup)/urdf/wpv3.urdf"/>
+  <arg name="gui" default="true" />
+  <arg name="rvizconfig" default="$(find wpv3_tutorials)/rviz/nav.rviz" />
+
+</launch>

@@ -1,0 +1,9 @@
+<launch>
+
+  <!--- Run WPV3 -->
+  <include file="$(find wpv3_bringup)/launch/all_server.launch" />
+
+  <!-- Run wpv3_dock_client node -->
+  <node name="wpv3_dock_client" pkg="wpv3_tutorials" type="wpv3_dock_client"  output="screen"/>
+
+</launch>

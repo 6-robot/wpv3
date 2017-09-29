@@ -1,0 +1,12 @@
+<launch>
+
+  <arg name="model" default="$(find wpv3_bringup)/urdf/wpv3.urdf"/>
+  <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+  <!-- Run wpv3 core -->
+  <node pkg="wpv3_bringup" type="wpv3_core" name="wpv3_core" output="screen">
+    <param name="serial_port" type="string" value="/dev/wpv3_base"/> 
+  </node>
+
+</launch>

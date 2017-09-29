@@ -1,0 +1,7 @@
+<library path="lib/libwpv3_local_planner">
+	<class name="wpv3_local_planner/Wpv3LocalPlanner" type="wpv3_local_planner::Wpv3LocalPlanner" base_class_type="nav_core::BaseLocalPlanner">
+		<description>
+			The wpv3_local_planner package implements a plugin to the base_local_planner of the 2D navigation stack.
+		</description>
+	</class>
+</library>
