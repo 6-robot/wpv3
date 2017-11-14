@@ -1,6 +1,6 @@
 <launch>
 
   <node pkg="wpv3_bringup" type="wpv3_imu" name="wpv3_imu" output="screen"/>
-  <node pkg="wpv3_bringup" type="imu_odometry" name="imu_odometry" output="screen"/>
+  <node pkg="wpv3_bringup" type="wpv3_imu_odometry" name="wpv3_imu_odometry" output="screen"/>
 
 </launch>

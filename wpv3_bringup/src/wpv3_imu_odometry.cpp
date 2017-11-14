@@ -48,25 +48,25 @@ void imuCallback(const sensor_msgs::Imu::ConstPtr& msg)
     tf::Transform transform;
     transform.setOrigin( tf::Vector3(0, 0, 0) );
     tf::Quaternion q(msg->orientation.x,msg->orientation.y,msg->orientation.z,msg->orientation.w);
-    printf("[imu_odometry] Yaw= %f \n",tf::getYaw(q)*180/3.1415);
+    printf("[wpv3_imu_odometry] Yaw= %f \n",tf::getYaw(q)*180/3.1415);
     transform.setRotation(q);
     odom_broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "odom", "base_footprint"));
     odom_broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "odom", "imu"));
 
     //////////////////////////////////////////////
-    tf::Quaternion quat(msg->orientation.x, msg->orientation.y, msg->orientation.z, msg->orientation.w);
-    double yaw = 0;//tf::getYaw(quat);
-    double roll = 0;
-    double pitch = 0;
-    tf::Matrix3x3(quat).getRPY(pitch, roll, yaw);
-    ROS_WARN("[IMU] yaw= %.2f, roll= %.2f, pitch= %.2f",yaw, roll, pitch);
+    // tf::Quaternion quat(msg->orientation.x, msg->orientation.y, msg->orientation.z, msg->orientation.w);
+    // double yaw = 0;//tf::getYaw(quat);
+    // double roll = 0;
+    // double pitch = 0;
+    // tf::Matrix3x3(quat).getRPY(pitch, roll, yaw);
+    // ROS_WARN("[IMU] yaw= %.2f, roll= %.2f, pitch= %.2f",yaw, roll, pitch);
     //////////////////////////////////////////////
 }
 
 int main(int argc, char **argv)
 {
-  ros::init(argc,argv, "imu_odometry"); 
-  ROS_INFO("[imu_odometry]");
+  ros::init(argc,argv, "wpv3_imu_odometry"); 
+  ROS_INFO("[wpv3_imu_odometry]");
 
   ros::NodeHandle n;
   //odom_pub = n.advertise<nav_msgs::Odometry>("odom", 50);

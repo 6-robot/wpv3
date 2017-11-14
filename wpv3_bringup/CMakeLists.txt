@@ -215,11 +215,11 @@ target_link_libraries(wpv3_imu
   ${catkin_LIBRARIES}
 )
 
-add_executable(imu_odometry
-  src/imu_odometry.cpp
+add_executable(wpv3_imu_odometry
+  src/wpv3_imu_odometry.cpp
 )
-add_dependencies(imu_odometry ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(imu_odometry
+add_dependencies(wpv3_imu_odometry ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(wpv3_imu_odometry
   ${catkin_LIBRARIES}
 )
 
@@ -228,6 +228,14 @@ add_executable(wpv3_js_velcmd
 )
 add_dependencies(wpv3_js_velcmd ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(wpv3_js_velcmd
+  ${catkin_LIBRARIES}
+)
+
+add_executable(wpv3_cali_vel
+  src/wpv3_cali_vel.cpp
+)
+add_dependencies(wpv3_cali_vel ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(wpv3_cali_vel
   ${catkin_LIBRARIES}
 )
 
