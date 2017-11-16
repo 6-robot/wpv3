@@ -105,7 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-    INCLUDE_DIRS include
+    INCLUDE_DIRS
 #  LIBRARIES wpv3_tutorials
 #  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS system_lib
@@ -119,7 +119,6 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
   ${catkin_INCLUDE_DIRS}
-  include
 )
 
 ## Declare a C++ library
