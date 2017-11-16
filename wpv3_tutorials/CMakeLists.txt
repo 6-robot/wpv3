@@ -210,6 +210,16 @@ target_link_libraries(wpv3_velocity_control
   ${catkin_LIBRARIES}
 )
 
+
+add_executable(wpv3_imu_demo
+  src/wpv3_imu_demo.cpp
+)
+add_dependencies(wpv3_imu_demo ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(wpv3_imu_demo
+  ${catkin_LIBRARIES}
+)
+
+
 add_executable(wpv3_simple_goal
   src/wpv3_simple_goal.cpp
 )

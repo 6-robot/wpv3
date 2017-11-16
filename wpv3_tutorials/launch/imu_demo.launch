@@ -1,0 +1,9 @@
+<launch>
+  
+  <!--- Run WPV3 Core -->
+  <include file="$(find wpv3_bringup)/launch/base_imu_lidar.launch" />
+
+  <!--- Run imu demo -->
+  <node name="wpv3_imu_demo" pkg="wpv3_tutorials" type="wpv3_imu_demo"  output="screen"/>
+
+</launch>
