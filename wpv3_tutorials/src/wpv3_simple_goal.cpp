@@ -31,44 +31,60 @@
 *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 *  POSSIBILITY OF SUCH DAMAGE.
 *********************************************************************/
-
 #include <ros/ros.h>
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
+#include <tf/transform_broadcaster.h>
+
+static tf::StampedTransform transform;
 
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "wpv3_simple_goal");
+	ros::init(argc, argv, "wpv3_simple_goal");
 
-    //tell the action client that we want to spin a thread by default
-    MoveBaseClient ac("move_base", true);
+	// 构造一个导航客户对象,以便向 Navigation 系统发送导航请求
+	MoveBaseClient ac("move_base", true);
 
-    //wait for the action server to come up
-    while(!ac.waitForServer(ros::Duration(5.0)))
-    {
-        ROS_INFO("Waiting for the move_base action server to come up");
-    }
+	// 等待ROS的导航服务启动
+	while (!ac.waitForServer(ros::Duration(5.0)))
+	{
+		ROS_INFO("Waiting for the move_base action server to come up");
+	}
 
-    move_base_msgs::MoveBaseGoal goal;
+	move_base_msgs::MoveBaseGoal goal;
 
-    //we'll send a goal to the robot to move 1 meter forward
-    goal.target_pose.header.frame_id = "base_footprint";
-    goal.target_pose.header.stamp = ros::Time::now();
+	// 以机器人本体为原点,向前走1米
+	goal.target_pose.header.frame_id = "base_footprint"; // 如果换成"map"就是地图全局坐标系
+	goal.target_pose.header.stamp = ros::Time::now();
 
-    goal.target_pose.pose.position.x = 1.0;
-    goal.target_pose.pose.orientation.w = 1.0;
+	// 导航目的地坐标 ( 1.0 , 0.0 ) 前方一米处
+	goal.target_pose.pose.position.x = 1.0;
+	goal.target_pose.pose.orientation.w = 1.0;
 
-    ROS_INFO("Sending goal");
-    ac.sendGoal(goal);
+	tf::Quaternion quat;
+	// 目标姿态,函数三个参数分别为滚转,俯仰和偏转角,单位为弧度
+	quat.setRPY(0.0, 0.0, 3.14);
+	// 将欧拉角旋转量转换成四元数表达
+	transform.setRotation(quat);
+	goal.target_pose.pose.orientation.x = transform.getRotation().getX();
+	goal.target_pose.pose.orientation.y = transform.getRotation().getY();
+	goal.target_pose.pose.orientation.z = transform.getRotation().getZ();
+	goal.target_pose.pose.orientation.w = transform.getRotation().getW();
 
-    ac.waitForResult();
+	// 发送导航坐标给 Navigation 系统
+	ROS_INFO("Sending goal");
+	ac.sendGoal(goal);
 
-    if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
-        ROS_INFO("Hooray, the base moved 1 meter forward");
-    else
-        ROS_INFO("The base failed to move forward 1 meter for some reason");
+	// 等待执行结果
+	ac.waitForResult();
 
-    return 0;
+	// 根据返回值判定执行结果
+	if (ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+		ROS_INFO("Hooray, the base moved 1 meter forward");
+	else
+		ROS_INFO("The base failed to move forward 1 meter for some reason");
+
+	return 0;
 }

@@ -168,10 +168,10 @@ int main(int argc, char** argv)
     Init_WayPoints();
     Init_Marker();
 
-    //tell the action client that we want to spin a thread by default
+    // 构造一个导航客户对象,以便向 Navigation 系统发送导航请求
     MoveBaseClient ac("move_base", true);
 
-    //wait for the action server to come up
+    // 等待ROS的导航服务启动
     while(!ac.waitForServer(ros::Duration(5.0)))
     {
         if(!ros::ok())
