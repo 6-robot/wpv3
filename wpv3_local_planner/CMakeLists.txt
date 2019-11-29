@@ -44,7 +44,9 @@ install(FILES
 
 add_library(wpv3_local_planner
   include/wpv3_local_planner/wpv3_local_planner.h
+  include/wpv3_local_planner/wl_helper.h
   src/wpv3_local_planner.cpp
+  src/wl_helper.cpp
 )
 add_dependencies(wpv3_local_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(wpv3_local_planner

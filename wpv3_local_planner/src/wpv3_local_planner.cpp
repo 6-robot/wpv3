@@ -36,12 +36,14 @@
  ********************************************************************/
 
 #include <wpv3_local_planner/wpv3_local_planner.h>
+#include <wpv3_local_planner/wl_helper.h>
 #include <tf_conversions/tf_eigen.h>
 #include <pluginlib/class_list_macros.h>
 
 // register this planner as a Wpv3LocalPlanner plugin
 PLUGINLIB_DECLARE_CLASS(wpv3_local_planner, Wpv3LocalPlanner, wpv3_local_planner::Wpv3LocalPlanner, nav_core::BaseLocalPlanner)
 
+static float ranges[1081];
 namespace wpv3_local_planner
 {
     Wpv3LocalPlanner::Wpv3LocalPlanner()
@@ -53,6 +55,8 @@ namespace wpv3_local_planner
         m_bInitialized = false;
         m_bAC = false;
         m_bFirstStep = true;
+
+        InitHelper();
 
         m_pi = 3.1415926;
         pntx = new float[1081];
@@ -165,6 +169,7 @@ namespace wpv3_local_planner
             pntx[i] = fVal * cosk[i];
             pnty[i] = fVal * sink[i] * -1;
             //printf("[%d] ( %.2f , %.2f )\n",i,pntx[i],pnty[i]);
+            ranges[i] = scan->ranges[i];
         }
 
         //检测障碍物的距离
@@ -331,6 +336,7 @@ namespace wpv3_local_planner
         cmd_vel.linear.x = 0;
         cmd_vel.linear.y = 0;
         cmd_vel.angular.z = 0;
+        bool res = true;
 
         /////////////////////////////////////////////////
         if(m_bFirstStep == true)
@@ -395,12 +401,20 @@ namespace wpv3_local_planner
             }
             else
             {
+                 /////////////////////////////////
+                // 未靠近目标点,这时候需要避障
+                ROS_WARN("---------------WPR1_STEP_GOTO-----------------");
+                // 障碍点
+                ClearObst();
+                SetRanges(ranges);
+                ///////////////////////////////////
                 //check if target is near
                 double target_x, target_y, target_th;
+                int path_index = m_nPathIndex;
                 while(m_nPathIndex < path_num-1)
                 {
                     getTransformedPosition(m_global_plan[m_nPathIndex], m_robot_base_frame_id, target_x, target_y, target_th);
-                    if(sqrt(target_x*target_x + target_y*target_y) < m_goal_dist_tolerance)
+                    if(sqrt(target_x*target_x + target_y*target_y) < m_goal_dist_tolerance  || (ChkTarget(target_y/0.05+50,target_x/0.05+50) == false))
                     {
                         m_nPathIndex ++;
                         //ROS_WARN("[WPV3-GOTO]target = %d ",m_nPathIndex);
@@ -411,11 +425,41 @@ namespace wpv3_local_planner
                     }
                 }
 
-                double face_target = CalDirectAngle(0, 0, target_x, target_y);
+                // 路径点
+                double gpath_x, gpath_y, gpath_th;
+                ClearTarget();
+                for(int i=m_nPathIndex;i<path_num;i++)
+                {
+                    getTransformedPosition(m_global_plan[i], m_robot_base_frame_id, gpath_x, gpath_y, gpath_th);
+                    SetTarget(gpath_y/0.05+50,gpath_x/0.05+50);
+                }
+                // 局部路径
+                res = OutLine();
+                if(res == false)
+                {
+                    cmd_vel.linear.x = 0;
+                    cmd_vel.linear.y = 0;
+                    cmd_vel.angular.z = 0;
+                    return true;
+                }
+                if(GetHelperNum() > 5 && (path_num - m_nPathIndex) > 1)
+                {
+                    target_x = GetFixX();
+                    target_y = GetFixY();;
+                }
+                else
+                {
+                    getTransformedPosition(m_global_plan[m_nPathIndex], m_robot_base_frame_id, target_x, target_y, target_th);
+                }
+                ROS_WARN("target(%.2f , %.2f)       %d/%d",target_x,target_y,m_nPathIndex,path_num);
+ 
+                // 朝向target
+                getTransformedPosition(m_global_plan[m_nPathIndex], m_robot_base_frame_id, gpath_x, gpath_y, gpath_th);
+                double face_target = CalDirectAngle(0, 0, gpath_x, gpath_y);
                 face_target = AngleFix(face_target,-2.1,2.1);
                 if(fabs(face_target)> 0.52)
                 {
-                    //turn in place
+                    // 朝向角太大,先原地旋转
                     cmd_vel.linear.x = 0;
                     cmd_vel.linear.y = 0;
                     cmd_vel.angular.z = face_target * m_acc_scale_rot;
@@ -424,25 +468,15 @@ namespace wpv3_local_planner
                 }
                 else
                 {
-                    double target_dist = sqrt(target_x*target_x + target_y*target_y);
-                    cmd_vel.linear.x = target_dist*cos(face_target) * m_acc_scale_trans;
-                    cmd_vel.linear.y = target_dist*sin(face_target) * m_acc_scale_trans;
+                     // 朝向差不多了,开始移动
+                    cmd_vel.linear.x = target_x * m_acc_scale_trans;
+                    cmd_vel.linear.y = target_y * m_acc_scale_trans;
                     cmd_vel.angular.z = face_target * m_acc_scale_rot;
                     if(cmd_vel.linear.x > 0) cmd_vel.linear.x+=0.05;
                     if(cmd_vel.linear.x < 0) cmd_vel.linear.x-=0.05;
                     if(cmd_vel.linear.y > 0) cmd_vel.linear.y+=0.02;
                     if(cmd_vel.linear.y < 0) cmd_vel.linear.y-=0.02;
 
-                    // cmd_vel.linear.x = 0;
-                    // cmd_vel.linear.y = 0;
-                    if(m_bAC == true)
-                    {
-                        m_bAC = false;
-                        cmd_vel.linear.x = 0;
-                        cmd_vel.linear.y = 0;
-                        cmd_vel.angular.z = 0;
-                        return m_bAC;
-                    }
                 }
                 m_pub_target.publish(m_global_plan[m_nPathIndex]);
                 // cmd_vel.linear.x += ac_x;
@@ -474,7 +508,7 @@ namespace wpv3_local_planner
         if(cmd_vel.angular.z > m_max_vel_rot) cmd_vel.angular.z = m_max_vel_rot;
         if(cmd_vel.angular.z < -m_max_vel_rot) cmd_vel.angular.z = -m_max_vel_rot;
 
-        SmothVel(cmd_vel);
+        //SmothVel(cmd_vel);
         m_last_cmd = cmd_vel;
         
         return true;
