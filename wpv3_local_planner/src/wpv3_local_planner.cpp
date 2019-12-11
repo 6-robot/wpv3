@@ -105,9 +105,9 @@ namespace wpv3_local_planner
             nh_planner.param("max_vel_trans", m_max_vel_trans, 0.3);
             nh_planner.param("max_vel_rot", m_max_vel_rot, 0.9);
             nh_planner.param("acc_scale_trans", m_acc_scale_trans, 0.8);
-            nh_planner.param("acc_scale_rot", m_acc_scale_rot, 0.3);
+            nh_planner.param("acc_scale_rot", m_acc_scale_rot, 0.6);
             nh_planner.param("goal_dist_tolerance", m_goal_dist_tolerance, 0.2);
-            nh_planner.param("goal_yaw_tolerance", m_goal_yaw_tolerance, 0.2);
+            nh_planner.param("goal_yaw_tolerance", m_goal_yaw_tolerance, 0.03);
             nh_planner.param("scan_topic", m_scan_topic, std::string("/scan"));
 
             m_pub_target = nh_planner.advertise<geometry_msgs::PoseStamped>("local_planner_target", 10);
@@ -403,7 +403,7 @@ namespace wpv3_local_planner
             {
                  /////////////////////////////////
                 // 未靠近目标点,这时候需要避障
-                ROS_WARN("---------------WPR1_STEP_GOTO-----------------");
+                ROS_WARN("---------------WPV3_STEP_GOTO-----------------");
                 // 障碍点
                 ClearObst();
                 SetRanges(ranges);
@@ -537,7 +537,7 @@ namespace wpv3_local_planner
 
     bool Wpv3LocalPlanner::isGoalReached()
     {
-        //ROS_WARN("[WPR1]isGoalReached() ");
+        //ROS_WARN("[WPV3]isGoalReached() ");
         if (m_goal_reached)
         {
             ROS_INFO("GOAL Reached!");
