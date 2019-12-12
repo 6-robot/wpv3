@@ -75,11 +75,22 @@ void CWPRLidarFilter::lidarCallback(const sensor_msgs::LaserScan::ConstPtr& scan
     for(int i=0 ; i<nRanges ; i++)
     {
         new_scan.ranges[i] = scan->ranges[i];
-        if(new_scan.ranges[i] < 0.4)
-        {
-            new_scan.ranges[i] = new_scan.range_max+1.0;
-        }
         new_scan.intensities[i] = scan->intensities[i];
+    }
+    // 剔除货架腿遮挡部分
+    int nRemoveAngle = 20;      //遮挡的角度跨度
+    int nLeftStartIndex = 180;  //开始遮挡的线数
+
+    int nRightStartIndex = 1081 - nLeftStartIndex;
+    for(int i=nLeftStartIndex ; i<nLeftStartIndex+nRemoveAngle*4 ; i++)
+    {
+        new_scan.ranges[i] = new_scan.range_max+1.0;
+        new_scan.intensities[i] = 0;
+    }
+    for(int i=nRightStartIndex ; i>nRightStartIndex-nRemoveAngle*4 ; i--)
+    {
+        new_scan.ranges[i] = new_scan.range_max+1.0;
+        new_scan.intensities[i] = 0;
     }
     scan_pub.publish(new_scan);
 }
