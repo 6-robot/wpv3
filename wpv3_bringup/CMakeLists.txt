@@ -256,3 +256,11 @@ add_dependencies(wpv3_dock_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_E
 target_link_libraries(wpv3_dock_server
   ${catkin_LIBRARIES}
 )
+
+add_executable(wpv3_lidar_filter
+  src/wpv3_lidar_filter.cpp
+)
+add_dependencies(wpv3_lidar_filter ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(wpv3_lidar_filter
+  ${catkin_LIBRARIES}
+)

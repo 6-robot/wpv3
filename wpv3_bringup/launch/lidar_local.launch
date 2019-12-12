@@ -15,7 +15,13 @@
 
   <!--- Run urg node -->
   <node name="urg_node" pkg="urg_node" type="urg_node" output="screen">
-    <param name="ip_address" type="string" value="192.168.0.10"/> 
+    <param name="ip_address" type="string" value="192.168.0.10"/>
+    <remap from="scan" to="scan_raw"/>
+  </node>
+
+  <!-- Run lidar filter -->
+  <node pkg="wpv3_bringup" type="wpv3_lidar_filter" name="wpv3_lidar_filter">
+    <param name="pub_topic" value="/scan"/>
   </node>
 
 </launch>
