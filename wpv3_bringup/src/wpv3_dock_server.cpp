@@ -164,7 +164,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "wpv3_dock_server");
 
     ros::NodeHandle n;
-    ros::Subscriber sub_sr = n.subscribe("/wpv3_behaviors", 30, BehaviorCB);
+    ros::Subscriber sub_sr = n.subscribe("/wpv3/behaviors", 30, BehaviorCB);
     ros::Subscriber scan_sub = n.subscribe<sensor_msgs::LaserScan>("/scan",30,ScanCB);
     result_pub = n.advertise<std_msgs::String>("/wpv3/dock_result", 30);
     vel_pub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 30);
@@ -274,7 +274,7 @@ int main(int argc, char** argv)
                 }
                 float fVel_Y = cDock.nDock_X * -0.0005;
                 fVel_Y = VelLimit(fVel_Y,-0.05,0.05);
-                float fVel_X = cDock.nDock_Y * 0.005;
+                float fVel_X = cDock.nDock_Y * 0.002;
                 fVel_X = VelLimit(fVel_X,-0.2,0.2);
                 float fVelTurn = nDock_Angle * -(3.14/180) * 0.5;
                 fVelTurn = VelLimit(fVelTurn,-0.3,0.3);

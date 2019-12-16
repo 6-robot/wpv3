@@ -1,14 +1,5 @@
 <launch>
   
-  <arg name="model" default="$(find wpv3_bringup)/urdf/wpv3.urdf"/>
-  <arg name="gui" default="true" />
-  <arg name="rvizconfig" default="$(find wpv3_tutorials)/rviz/3d_slam.rviz" />
-
-  <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
-  <param name="use_gui" value="$(arg gui)"/>
-
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
-
   <!--- Run Kinect -->
   <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch"/>
 
@@ -68,5 +59,15 @@
   <param name="scale_linear" value="0.5" type="double"/>
   <param name="scale_angular" value="1" type="double"/>
   <node pkg="wpv3_bringup" type="wpv3_js_velcmd" name="teleop"/>
+  
+  <!-- Rviz -->
+  <arg name="model" default="$(find wpv3_bringup)/urdf/wpv3_rack.urdf"/>
+  <arg name="gui" default="true" />
+  <arg name="rvizconfig" default="$(find wpv3_tutorials)/rviz/3d_slam.rviz" />
+
+  <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+  <param name="use_gui" value="$(arg gui)"/>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
 
 </launch>

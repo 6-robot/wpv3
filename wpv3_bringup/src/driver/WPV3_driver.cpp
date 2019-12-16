@@ -112,6 +112,7 @@ void CWPV3_driver::m_ParseFrame(unsigned char *inBuf, int inLen)
 				m_valData[i] = m_USFromChar(&(inBuf[7 + i * 2]));
 			}
 			m_chIO = inBuf[7 + 5 * 2];
+			//printf("AD4= %d  io= %.2X\n",m_valData[4],m_chIO);
 			// switch (inBuf[5])
 			// {
 			// case 0x60:

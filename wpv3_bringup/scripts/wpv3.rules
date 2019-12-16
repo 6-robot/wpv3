@@ -1,6 +1,6 @@
 # udev rule for wpv3
 #
 #udevadm info -a /dev/ttyUSB0 |  grep 'KERNELS'
-KERNEL=="ttyUSB*", KERNELS=="4-1", MODE:="0777", SYMLINK+="wpv3_imu"
-KERNEL=="ttyUSB*", KERNELS=="5-1", MODE:="0777", SYMLINK+="wpv3_base"
+KERNEL=="ttyUSB*", KERNELS=="1-10", MODE:="0777", SYMLINK+="wpv3_imu"
+KERNEL=="ttyUSB*", KERNELS=="1-9", MODE:="0777", SYMLINK+="wpv3_base"
 

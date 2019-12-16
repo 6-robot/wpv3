@@ -173,7 +173,7 @@ int main(int argc, char** argv)
     nLastMotorPos[0] = nLastMotorPos[1] = nLastMotorPos[2] = 0;
 
     sensor_msgs::BatteryState  battery_msg;
-    ros::Publisher battery_pub = n.advertise<sensor_msgs::BatteryState>("/wpr1/battery_state",10);
+    ros::Publisher battery_pub = n.advertise<sensor_msgs::BatteryState>("/wpv3/battery_state",10);
 
     bool bFirst = true;
     while(n.ok())
@@ -334,8 +334,17 @@ int main(int argc, char** argv)
         m_wpv3.Velocity(curVel.linear.x,curVel.linear.y,curVel.angular.z);
         ///////////////////////
         battery_msg.voltage = (float)m_wpv3.m_valData[4]*0.01;
-        battery_msg.charge = (m_wpv3.m_chIO & 0x04);
+        int tmpChar = (m_wpv3.m_chIO & 0x04);
+        if(tmpChar == 0)
+        {
+            battery_msg.charge = 6;
+        }
+        else
+        {
+            battery_msg.charge = 0;
+        }
         battery_pub.publish(battery_msg);
+        //ROS_WARN("[battery]voltage= %.1f   c = %d  charge = %.2f",battery_msg.voltage,tmpChar,battery_msg.charge);
 
         ros::spinOnce();
         r.sleep();
