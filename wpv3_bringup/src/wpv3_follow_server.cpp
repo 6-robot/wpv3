@@ -155,7 +155,7 @@ int main(int argc, char **argv)
     ros::NodeHandle nh;
     ros::Subscriber scan_sub = nh.subscribe<sensor_msgs::LaserScan>("/scan",30,ScanCB);
 
-    ros::Subscriber sub_sr = nh.subscribe("/wpv3_behaviors", 30, BehaviorCB);
+    ros::Subscriber sub_sr = nh.subscribe("/wpv3/behaviors", 30, BehaviorCB);
 
     vel_pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 10);
 

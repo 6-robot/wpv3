@@ -48,7 +48,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "wpv3_dock_client");  //程序初始化
 
     ros::NodeHandle n;
-    behaviors_pub = n.advertise<std_msgs::String>("wpv3_behaviors", 30);
+    behaviors_pub = n.advertise<std_msgs::String>("/wpv3/behaviors", 30);
     ros::Subscriber res_sub = n.subscribe("/wpv3/dock_result", 30, DockResultCB);
 
     ROS_WARN("[main] wpv3_dock_client");

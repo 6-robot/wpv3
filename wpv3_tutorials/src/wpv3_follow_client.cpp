@@ -47,7 +47,7 @@ int main(int argc, char** argv)
     ROS_WARN("[main] wpv3_follow_client");
 
     ros::NodeHandle n;
-    behaviors_pub = n.advertise<std_msgs::String>("wpv3_behaviors", 30);
+    behaviors_pub = n.advertise<std_msgs::String>("/wpv3/behaviors", 30);
 
     sleep(1);
 
