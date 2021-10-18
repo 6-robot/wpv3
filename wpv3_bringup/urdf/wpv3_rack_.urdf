@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot name="WPV3_RACK">
+<robot name="WPV3">
 
   <!-- material -->
   <material name = "black">
@@ -11,9 +11,7 @@
   <material name = "blue">
     <color rgba = "0.2 0.2 0.9 1"/>
   </material>
-  <material name = "sliver">
-    <color rgba = "0.8 0.8 0.8 1"/>
-  </material>
+
 
 <link name="base_footprint">
     <visual>
@@ -35,6 +33,12 @@
     </inertial>
 </link>
 
+<joint name="base_joint" type="fixed">
+  <origin xyz="0 0 0" rpy="0 0 0" />
+  <parent link="base_footprint"/>
+  <child link="base_link" />
+</joint>
+
   <!-- base -->
   <link name="base_link">
   <visual>
@@ -44,129 +48,21 @@
    <origin rpy = "1.57 0 -1.57" xyz = "0.22 .293 0"/>
   </visual>
   </link>
-<joint name="base_joint" type="fixed">
-  <origin xyz="0 0 0" rpy="0 0 0" />
-  <parent link="base_footprint"/>
-  <child link="base_link" />
-</joint>
 
-
-  <!-- mobile_rack_levels -->
-  <link name = "rack_level_1">
+  <!-- mobile_rack -->
+  <link name = "mobile_rack">
     <visual>
     <geometry>
-      <box size="0.45 0.5 0.03"/>
+      <mesh filename="package://wpv3_bringup/meshes/mobile_rack.dae" scale="1 1 1"/>
     </geometry>
     <origin rpy = "0 0 0" xyz = "0 0 0"/>
-    <material name = "blue"/>
+    
     </visual>
   </link>
-  <joint name="joint_level_1" type="fixed">
-      <origin rpy="0 0 0" xyz="0 0 0.4" /> 
+  <joint name="base_rack" type="fixed">
+      <origin rpy="0 0 3.14" xyz="0 0 0.02"  /> <!--pos-->
       <parent link="base_link" />
-      <child link="rack_level_1" />
-  </joint>
-  <link name = "rack_level_2">
-    <visual>
-    <geometry>
-      <box size="0.45 0.5 0.03"/>
-    </geometry>
-    <origin rpy = "0 0 0" xyz = "0 0 0"/>
-    <material name = "blue"/>
-    </visual>
-  </link>
-  <joint name="level_2" type="fixed">
-      <origin rpy="0 0 0" xyz="0 0 0.85"  /> 
-      <parent link="base_link" />
-      <child link="rack_level_2" />
-  </joint>
-  <link name = "rack_level_3">
-    <visual>
-    <geometry>
-      <box size="0.45 0.5 0.03"/>
-    </geometry>
-    <origin rpy = "0 0 0" xyz = "0 0 0"/>
-    <material name = "blue"/>
-    </visual>
-  </link>
-  <joint name="level_3" type="fixed">
-      <origin rpy="0 0 0" xyz="0 0 1.241"  /> 
-      <parent link="base_link" />
-      <child link="rack_level_3" />
-  </joint>
-
-  <!-- mobile_rack_beams -->
-  <link name = "rack_beam_1">
-    <visual>
-    <geometry>
-      <box size="0.03 0.03 0.87"/>
-    </geometry>
-    <origin rpy = "0 0 0" xyz = "0 0 0"/>
-    <material name = "sliver"/>
-    </visual>
-  </link>
-  <joint name="joint_beam_1" type="fixed">
-      <origin rpy="0 0 0" xyz="0.211 0.236 0.82" /> 
-      <parent link="base_link" />
-      <child link="rack_beam_1" />
-  </joint>
-  <link name = "rack_beam_2">
-    <visual>
-    <geometry>
-      <box size="0.03 0.03 0.87"/>
-    </geometry>
-    <origin rpy = "0 0 0" xyz = "0 0 0"/>
-    <material name = "sliver"/>
-    </visual>
-  </link>
-  <joint name="joint_beam_2" type="fixed">
-      <origin rpy="0 0 0" xyz="-0.211 0.236 0.82" /> 
-      <parent link="base_link" />
-      <child link="rack_beam_2" />
-  </joint>
-  <link name = "rack_beam_3">
-    <visual>
-    <geometry>
-      <box size="0.03 0.03 0.87"/>
-    </geometry>
-    <origin rpy = "0 0 0" xyz = "0 0 0"/>
-    <material name = "sliver"/>
-    </visual>
-  </link>
-  <joint name="joint_beam_3" type="fixed">
-      <origin rpy="0 0 0" xyz="-0.211 -0.236 0.82" /> 
-      <parent link="base_link" />
-      <child link="rack_beam_3" />
-  </joint>
-  <link name = "rack_beam_4">
-    <visual>
-    <geometry>
-      <box size="0.03 0.03 0.87"/>
-    </geometry>
-    <origin rpy = "0 0 0" xyz = "0 0 0"/>
-    <material name = "sliver"/>
-    </visual>
-  </link>
-  <joint name="joint_beam_4" type="fixed">
-      <origin rpy="0 0 0" xyz="0.211 -0.236 0.82" /> 
-      <parent link="base_link" />
-      <child link="rack_beam_4" />
-  </joint>
-
-<!-- mobile_rack_back -->
-<link name = "rack_back">
-    <visual>
-    <geometry>
-      <box size="0.01 0.5 0.87"/>
-    </geometry>
-    <origin rpy = "0 0 0" xyz = "0 0 0"/>
-    <material name = "blue"/>
-    </visual>
-  </link>
-  <joint name="joint_back" type="fixed">
-      <origin rpy="0 0 0" xyz="-0.23 0 0.82" /> 
-      <parent link="base_link" />
-      <child link="rack_back" />
+      <child link="mobile_rack" />
   </joint>
 
   <!-- kinect2 model -->
@@ -180,8 +76,8 @@
     </visual>
   </link>
   <joint name="rack_kinect2" type="fixed">
-      <origin rpy="0 0 3.14" xyz="0.2 0 1.26"  /> 
-      <parent link="base_link" />
+      <origin rpy="0 0 0" xyz="-0.2 0 1.22"  /> <!--pos-->
+      <parent link="mobile_rack" />
       <child link="kinect2" />
   </joint>
 
@@ -196,8 +92,8 @@
     </visual>
   </link>
   <joint name="rack_es" type="fixed">
-      <origin rpy="0 0 0" xyz="-0.2 0 1.25"  /> 
-      <parent link="base_link" />
+      <origin rpy="0 0 0" xyz="0.2 0 1.22"  /> <!--pos-->
+      <parent link="mobile_rack" />
       <child link="emergency_stop" />
   </joint>
 
@@ -269,4 +165,5 @@
     <child link="kinect2_rgb_optical_frame" />
 </joint>
 
+  
 </robot>
