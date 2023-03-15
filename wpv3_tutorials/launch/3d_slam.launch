@@ -65,7 +65,7 @@
   <arg name="gui" default="true" />
   <arg name="rvizconfig" default="$(find wpv3_tutorials)/rviz/3d_slam.rviz" />
 
-  <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
   <param name="use_gui" value="$(arg gui)"/>
 
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
